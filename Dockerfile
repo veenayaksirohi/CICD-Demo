@@ -12,7 +12,10 @@ COPY . .
 # Start Flask app in the background and run tests
 RUN python app.py & \
     sleep 5 && \
-    pytest
+    pytest -v -s 
+
+CMD ["sh", "-c", "python app.py & sleep 5 && pytest -v -s"]
+
 # Stage 2: Production
 FROM python:3.11-slim AS runtime
 WORKDIR /app
