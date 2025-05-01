@@ -1,15 +1,31 @@
-# Use an official Python image
-FROM python:3.10-slim
-
-# Set the working directory
+# Stage 1: Build and Test
+FROM python:3.11-slim AS test
 WORKDIR /app
 
-# Copy all files into the container
+# Install dependencies
+COPY req.txt .
+RUN pip install --no-cache-dir -r req.txt
+
+# Copy application and test files
 COPY . .
 
-# Install dependencies
-RUN pip install --upgrade pip \
-    && pip install -r req.txt
+# Start Flask app in the background and run tests
+RUN python app.py & \
+    sleep 5 && \
+    pytest
+# Stage 2: Production
+FROM python:3.11-slim AS runtime
+WORKDIR /app
 
-# Run tests
-CMD ["pytest", "test_app.py"]
+# Install dependencies
+COPY req.txt .
+RUN pip install --no-cache-dir -r req.txt
+
+# Copy only the application code
+COPY app.py .
+
+# Expose the Flask port
+EXPOSE 5000
+
+# Command to run the Flask app
+CMD ["python", "app.py"]
