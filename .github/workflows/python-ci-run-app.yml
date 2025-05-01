@@ -38,4 +38,4 @@ jobs:
 
     # --- Run tests ---
     - name: Run pytest
-      run: pytest -q
+      run: pytest test_app2.py -v -s
