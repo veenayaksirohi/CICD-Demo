@@ -33,8 +33,8 @@ jobs:
       env:
         FLASK_APP: app.py
       run: |
-        python app.py &                   # start server
-        sleep 3                           # give it a moment to boot
+        nohup python app.py > flask.log 2>&1 &                   # start server
+        sleep 5                          # give it a moment to boot
 
     # --- Run tests ---
     - name: Run pytest
